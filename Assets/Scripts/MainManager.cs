@@ -79,9 +79,11 @@ public class MainManager : MonoBehaviour
         // highest score?
         if (m_Points >= m_HighestPoints){
             m_HighestPoints = m_Points;
-            GameManager.Instance.HighestPlayerName = GameManager.Instance.playerName;
+            GameManager.Instance.highestPlayerName = GameManager.Instance.playerName;
             GameManager.Instance.highScore = m_Points;
             ShowHighScore();
+
+            GameManager.Instance.SaveHighScore();
         }
     }
 
@@ -92,8 +94,8 @@ public class MainManager : MonoBehaviour
     }
 
     private void ShowHighScore(){
-        if (GameManager.Instance.HighestPlayerName != ""){
-            HighScoreText.text = "Best score "+GameManager.Instance.HighestPlayerName+" - "+m_HighestPoints;
+        if (GameManager.Instance.highestPlayerName != ""){
+            HighScoreText.text = "Best score "+GameManager.Instance.highestPlayerName+" - "+m_HighestPoints;
             HighScoreText.gameObject.SetActive(true);
         } else {
             HighScoreText.gameObject.SetActive(false);
