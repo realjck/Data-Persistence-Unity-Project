@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainManager : MonoBehaviour
 {
@@ -10,11 +11,13 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public Text ScoreText;
+    public TextMeshProUGUI ScoreText;
+    public TextMeshProUGUI HighScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
+    private int m_HighestPoints;
     
     private bool m_GameOver = false;
 
@@ -22,6 +25,12 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // load high score
+        if (GameManager.Instance != null){
+            m_HighestPoints = GameManager.Instance.highScore;
+            ShowHighScore();
+        }
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -66,11 +75,28 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+
+        // highest score?
+        if (m_Points >= m_HighestPoints){
+            m_HighestPoints = m_Points;
+            GameManager.Instance.HighestPlayerName = GameManager.Instance.playerName;
+            GameManager.Instance.highScore = m_Points;
+            ShowHighScore();
+        }
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+    }
+
+    private void ShowHighScore(){
+        if (GameManager.Instance.HighestPlayerName != ""){
+            HighScoreText.text = "Best score "+GameManager.Instance.HighestPlayerName+" - "+m_HighestPoints;
+            HighScoreText.gameObject.SetActive(true);
+        } else {
+            HighScoreText.gameObject.SetActive(false);
+        }
     }
 }
